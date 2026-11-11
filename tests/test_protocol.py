@@ -46,6 +46,16 @@ def test_h7149_night_light():
     assert h7149.make_light_on(True)[-1] == 0x20
     assert _head(h7149.make_light_brightness(100), 5) == "3a 1b 01 02 64"
     assert h7149.make_light_brightness(100)[-1] == 0x46
+    # Red and blue were both confirmed visually on the device.
+    assert _head(h7149.make_light_color(255, 0, 0), 9) == "3a 1b 05 0d ff 00 00 00 00"
+    assert h7149.make_light_color(255, 0, 0)[-1] == 0xD6
+    assert _head(h7149.make_light_color(0, 0, 255), 9) == "3a 1b 05 0d 00 00 ff 00 00"
+    assert h7149.make_light_color(0, 0, 255)[-1] == 0xD6
+
+
+def test_h7149_light_color_decode():
+    assert h7149.decode_light_rgb(bytes.fromhex("aa1b050d00fd090000")) == (0, 253, 9)
+    assert h7149.decode_light_rgb(bytes.fromhex("aa1b0513000500")) is None  # scene
 
 
 def test_h7149_decoders():

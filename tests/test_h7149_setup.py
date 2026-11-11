@@ -22,6 +22,7 @@ STATE = H7149State(
     fault_bits=0x20,
     light_on=True,
     light_brightness=67,
+    light_rgb=(0, 253, 9),
 )
 
 
@@ -51,6 +52,8 @@ async def test_h7149_entities_and_set_humidity(hass):
     light = hass.states.get("light.goveelife_h7149_humidifier_night_light")
     assert light.state == "on"
     assert light.attributes["brightness"] == round(67 * 255 / 100)
+    assert light.attributes["color_mode"] == "rgb"
+    assert tuple(light.attributes["rgb_color"]) == (0, 253, 9)
     tank = hass.states.get("binary_sensor.goveelife_h7149_humidifier_water_tank")
     assert tank.state == "on" and tank.attributes["fault_bits"] == "0x20"
     assert hass.states.get("sensor.goveelife_h7149_humidifier_humidity").state == "58.9"
@@ -67,5 +70,16 @@ async def test_h7149_entities_and_set_humidity(hass):
             blocking=True,
         )
     assert cmd.call_args.args[0][:5] == bytes([0x33, 0x05, 0x03, 0x02, 0x80 | 45])
+
+    # Setting a color sends the solid-color command (light already on -> no on cmd).
+    with patch(f"{COORD}.async_command") as cmd:
+        await hass.services.async_call(
+            "light",
+            "turn_on",
+            {"entity_id": light.entity_id, "rgb_color": [255, 0, 0]},
+            blocking=True,
+        )
+    sent = [c.args[0][:9] for c in cmd.call_args_list]
+    assert sent == [bytes.fromhex("3a1b050dff00000000")]
 
     assert await hass.config_entries.async_unload(entry.entry_id)

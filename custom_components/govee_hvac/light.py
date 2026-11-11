@@ -3,7 +3,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
+from homeassistant.components.light import (
+    ATTR_BRIGHTNESS,
+    ATTR_RGB_COLOR,
+    ColorMode,
+    LightEntity,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -25,11 +30,11 @@ async def async_setup_entry(
 
 
 class H7149NightLight(GoveeEntity, LightEntity):
-    """On/off + brightness (device scale 0-100, HA scale 0-255)."""
+    """RGB night light: on/off, brightness (device 0-100 <-> HA 0-255), color."""
 
     _attr_name = "Night light"
-    _attr_color_mode = ColorMode.BRIGHTNESS
-    _attr_supported_color_modes = {ColorMode.BRIGHTNESS}
+    _attr_color_mode = ColorMode.RGB
+    _attr_supported_color_modes = {ColorMode.RGB}
 
     @property
     def is_on(self) -> bool | None:
@@ -43,7 +48,14 @@ class H7149NightLight(GoveeEntity, LightEntity):
             return None
         return round(data.light_brightness * 255 / 100)
 
+    @property
+    def rgb_color(self) -> tuple[int, int, int] | None:
+        data = self.coordinator.data
+        return data.light_rgb if data else None
+
     async def async_turn_on(self, **kwargs: Any) -> None:
+        if ATTR_RGB_COLOR in kwargs:
+            await self.coordinator.async_command(h7149.make_light_color(*kwargs[ATTR_RGB_COLOR]))
         if ATTR_BRIGHTNESS in kwargs:
             pct = max(1, round(kwargs[ATTR_BRIGHTNESS] * 100 / 255))
             await self.coordinator.async_command(h7149.make_light_brightness(pct))

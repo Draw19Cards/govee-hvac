@@ -32,7 +32,7 @@ Pull requests adding support for more Govee climate devices are welcome. A new m
 |---|---|---|
 | GoveeLife H7149 Humidifier | Humidifier | Power, mode (`auto` / `manual`), auto target humidity (40–80%) |
 | Mist level | Number | Manual mist level 1–9 (switches to manual mode) |
-| Night light | Light | On/off and brightness |
+| Night light | Light | On/off, brightness and RGB color |
 | Water tank | Binary sensor (problem) | On when the tank is removed or out of water |
 | Temperature | Sensor | Current temperature (reported by the device in °F; shown in your unit) |
 | Humidity | Sensor | Current relative humidity |

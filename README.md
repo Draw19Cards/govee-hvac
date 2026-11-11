@@ -103,7 +103,7 @@ The integration discovers supported devices automatically via Bluetooth. When a 
 1. A notification appears in **Settings → Devices & services**
 2. Click **Configure** and confirm the device
 
-To add manually, click the **Add integration** button above (or **Settings → Devices & services → Add Integration → Govee HVAC**), then enter the BLE address (MAC on Linux, UUID on macOS) and pick the model.
+You can also click the **Add integration** button above (or **Settings → Devices & services → Add Integration → Govee HVAC**). It lists every supported Govee device that Home Assistant's Bluetooth — local adapters and ESPHome proxies — has seen; pick yours. Entering a BLE address by hand is only a fallback, for a device HA hasn't picked up yet.
 
 ## Notes
 

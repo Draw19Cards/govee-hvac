@@ -4,7 +4,14 @@
     "step": {
       "user": {
         "title": "Govee HVAC",
-        "description": "Enter the BLE address of your Govee device (e.g. AA:BB:CC:DD:EE:FF on Linux, or the UUID on macOS) and pick its model.",
+        "description": "Pick a Govee device found by Home Assistant's Bluetooth (local adapters and Bluetooth proxies).",
+        "data": {
+          "address": "Device"
+        }
+      },
+      "manual": {
+        "title": "Govee HVAC",
+        "description": "Enter the device's BLE address (e.g. AA:BB:CC:DD:EE:FF) and model. If you expected it to be found automatically, make sure it's powered on, in range of a Bluetooth adapter or proxy, and not connected to the Govee app, then try again.",
         "data": {
           "address": "BLE Address",
           "model": "Model"

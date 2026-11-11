@@ -11,10 +11,18 @@ Local Bluetooth control of GoveeLife climate devices. No cloud, no Govee account
 
 ## Supported devices
 
-| Model | Device | Status |
-|---|---|---|
-| H7149 | GoveeLife Smart Humidifier | Supported |
-| H7151 | GoveeLife Smart Dehumidifier | Supported |
+Only these two devices are supported:
+
+| Model | Device |
+|---|---|
+| H7149 | GoveeLife Smart Humidifier |
+| H7151 | GoveeLife Smart Dehumidifier |
+
+Other Govee models aren't supported, and the integration won't offer to set them up, even when they look similar. Each model has its own command set (the H7151 is encrypted, the H7149 isn't), so every model has to be reverse-engineered and verified on real hardware.
+
+### Adding a device
+
+Pull requests adding support for more Govee climate devices are welcome. A new model is a protocol module (see [`h7149.py`](custom_components/govee_hvac/h7149.py) and [`h7151.py`](custom_components/govee_hvac/h7151.py)) plus a few registry entries. The checklist is in the `Adding a model` note at the top of [`const.py`](custom_components/govee_hvac/const.py). Please include tests in `tests/` and say which commands you verified on a real device.
 
 ## H7149 Humidifier
 

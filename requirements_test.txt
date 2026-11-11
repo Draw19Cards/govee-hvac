@@ -1,0 +1,12 @@
+# Test dependencies (Python >= 3.14.2). Pins match the HA version tests were written against.
+pytest-homeassistant-custom-component==0.13.375
+# Requirements of HA's bluetooth + usb components (not pulled in by the harness)
+bleak==3.0.2
+bleak-retry-connector==4.7.1
+bluetooth-adapters==2.4.0
+bluetooth-auto-recovery==1.6.4
+bluetooth-data-tools==1.29.24
+dbus-fast==5.0.22
+habluetooth==7.1.2
+aiousbwatcher==1.1.2
+serialx==1.11.0

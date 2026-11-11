@@ -131,3 +131,7 @@ You can also click the **Add integration** button above (or **Settings → Devic
 ## Protocol
 
 See [WRITEUP.md](WRITEUP.md) for a detailed writeup of the H7151 BLE protocol. The H7149's (unencrypted) command map is documented at the top of [`h7149.py`](custom_components/govee_hvac/h7149.py).
+
+## License
+
+Released into the public domain under [The Unlicense](LICENSE). Not affiliated with or endorsed by Govee.

@@ -1,49 +1,53 @@
-# Govee H7151 Dehumidifier — Home Assistant Integration
+<img src="icon.png" alt="Govee HVAC" width="96" align="right">
 
-Local Bluetooth control of the GoveeLife H7151 Dehumidifier. No cloud, no Govee account — works entirely over BLE.
+# Govee HVAC — Home Assistant Integration
 
-## Features
+Local Bluetooth control of GoveeLife climate devices. No cloud, no Govee account — works entirely over BLE.
+
+<!-- ha-marketplace:exclude-start -->
+[![Open your Home Assistant instance and open a repository in the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=Draw19Cards&repository=govee-hvac&category=integration)
+<!-- ha-marketplace:exclude-end -->
+[![Open your Home Assistant instance and start setting up Govee HVAC.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=govee_hvac)
+
+## Supported devices
+
+| Model | Device | Status |
+|---|---|---|
+| H7149 | GoveeLife Smart Humidifier | Supported |
+| H7151 | GoveeLife Smart Dehumidifier | Supported |
+
+## H7149 Humidifier
+
+### Entities
+
+| Entity | Type | Description |
+|---|---|---|
+| GoveeLife H7149 Humidifier | Humidifier | Power, mode (`auto` / `manual`), auto target humidity (40–80%) |
+| Mist level | Number | Manual mist level 1–9 (switches to manual mode) |
+| Night light | Light | On/off and brightness |
+| Water tank | Binary sensor (problem) | On when the tank is removed or out of water |
+| Temperature | Sensor | Current temperature (reported by the device in °F; shown in your unit) |
+| Humidity | Sensor | Current relative humidity |
+
+Changing the target humidity keeps the auto-mode options set in the Govee app (such as "keep misting at a low level after reaching target"). The app's **Custom** schedule mode is shown when active but can't be selected from Home Assistant.
+
+## H7151 Dehumidifier
+
+### Features
 
 - **All 5 modes**: Low, Medium, High, Auto (target humidity), Dryer
 - **Real-time sensors**: current temperature (°C) and relative humidity
 - **Target humidity control**: 35–85% in Auto mode
-- **Zero cloud dependency**: communicates directly with the device over Bluetooth
 
-## Entities
+### Entities
 
 | Entity | Type | Description |
 |---|---|---|
-| Govee H7151 Dehumidifier | Humidifier | Main control (power, mode, target humidity) |
+| GoveeLife H7151 Dehumidifier | Humidifier | Main control (power, mode, target humidity) |
 | Temperature | Sensor | Current room temperature in °C |
 | Humidity | Sensor | Current relative humidity |
 
-## Requirements
-
-- Home Assistant 2024.1 or later
-- Bluetooth adapter accessible to your HA instance (HA OS built-in, Supervised with USB dongle, etc.)
-- GoveeLife H7151 Dehumidifier powered on and within BLE range
-
-## Installation via HACS
-
-1. In HACS, go to **Integrations** → click the three-dot menu → **Custom repositories**
-2. Paste `https://github.com/Draw19Cards/govee-h7151-ha` and select category **Integration**
-3. Click **Add**, then search for "Govee H7151" and click **Download**
-4. Restart Home Assistant
-
-## Manual Installation
-
-Copy the `custom_components/govee_h7151/` directory into your HA `config/custom_components/` directory, then restart Home Assistant.
-
-## Configuration
-
-The integration discovers the device automatically via Bluetooth. When your H7151 is powered on:
-
-1. A notification appears in **Settings → Integrations**
-2. Click **Configure** and confirm the device
-
-To add manually: **Settings → Integrations → Add Integration → Govee H7151 Dehumidifier**, then enter the BLE address (MAC on Linux, UUID on macOS).
-
-## Modes
+### Modes
 
 | Mode | Behavior |
 |---|---|
@@ -53,15 +57,69 @@ To add manually: **Settings → Integrations → Add Integration → Govee H7151
 | `auto` | Runs until target humidity reached, then pauses |
 | `dryer` | High-output mode for drying clothes |
 
-In `auto` mode, set the target humidity (35–85%) using the **Set Humidity** service or the HA humidifier card slider.
+In `auto` mode, set the target humidity (35–85%) using the **Set Humidity** action or the humidifier card slider.
+
+## Requirements
+
+- Home Assistant 2024.1 or later (2026.3+ to show the integration's icon)
+- A Bluetooth adapter or [ESPHome Bluetooth proxy](https://esphome.io/components/bluetooth_proxy.html) in range of the device
+- The device powered on and within BLE range
+
+<!-- ha-marketplace:exclude-start -->
+## Installation
+
+Add this repository in the Marketplace, or install it through HACS.
+
+### Marketplace (Home Assistant 2026.11+)
+
+Click the **Marketplace** button above, or:
+
+1. Go to **Settings → Marketplace** → three-dot menu → **Custom repositories**
+2. Paste `https://github.com/Draw19Cards/govee-hvac` and select type **Integration**
+3. Search for **Govee HVAC** and click **Download**
+4. Restart Home Assistant
+
+On Home Assistant 2026.10 or older, use HACS the same way (**HACS → Integrations → Custom repositories**).
+
+### Manual
+
+Copy `custom_components/govee_hvac/` into your HA `config/custom_components/` directory, then restart Home Assistant.
+<!-- ha-marketplace:exclude-end -->
+
+### Upgrading from `govee_h7151` (v2.x)
+
+v3.0 renamed the integration from `govee_h7151` to `govee_hvac`. Home Assistant treats it as a new integration:
+
+1. Remove the old **Govee H7151 Dehumidifier** integration entry from **Settings → Devices & services**
+2. Delete `config/custom_components/govee_h7151/` (or uninstall it from Marketplace/HACS)
+3. Install Govee HVAC as above, restart, and add the device again
+
+Entity IDs may change; update any automations or dashboards that referenced them.
+
+## Configuration
+
+The integration discovers supported devices automatically via Bluetooth. When a device is powered on:
+
+1. A notification appears in **Settings → Devices & services**
+2. Click **Configure** and confirm the device
+
+To add manually, click the **Add integration** button above (or **Settings → Devices & services → Add Integration → Govee HVAC**), then enter the BLE address (MAC on Linux, UUID on macOS) and pick the model.
 
 ## Notes
 
-- HA and the Govee app cannot control the device simultaneously — BLE is single-client, and this integration holds a persistent connection. Keep the Govee phone app away from the device for best reliability.
-- The integration holds one BLE connection and reuses it across polls (every 30 seconds), reconnecting only if the link drops. This is required: the device's single connection slot leaks in HA's Bluetooth stack if connections are repeatedly opened and closed, so connect-per-poll is not viable. Each connect/reconnect is bounded by a timeout and retried a few times to ride through transient collisions.
-- Mode state is queried explicitly each poll via the mode register — it does not rely on tracking commands sent.
-- Water-tank status is **not** exposed as an entity: the device only signals it via a one-shot push notification at the moment the tank changes, with no pollable register, so it cannot be reported reliably.
+- HA and the Govee app cannot control a device simultaneously — BLE is single-client, and this integration holds a persistent connection. Keep the Govee phone app away from the device for best reliability.
+- The integration holds one BLE connection and reuses it across polls (every 30 seconds), reconnecting only if the link drops or stops answering. The device's single connection slot leaks in HA's Bluetooth stack if connections are repeatedly opened and closed, so connect-per-poll is not viable.
+- A brief BLE hiccup doesn't flip entities to Unavailable: the last good state is kept for up to 3 consecutive failed polls (~90 s) while the link is rebuilt. Each failure is logged as a warning with the reason.
+- For troubleshooting, enable debug logging:
+
+  ```yaml
+  logger:
+    logs:
+      custom_components.govee_hvac: debug
+  ```
+
+- H7151: mode state is queried explicitly each poll via the mode register. Water-tank status is **not** exposed: the device only signals it via a one-shot push notification, with no pollable register. (The H7149 does have a pollable fault register, so it gets a Water tank sensor.)
 
 ## Protocol
 
-See [WRITEUP.md](WRITEUP.md) for a detailed writeup of the BLE protocol.
+See [WRITEUP.md](WRITEUP.md) for a detailed writeup of the H7151 BLE protocol. The H7149's (unencrypted) command map is documented at the top of [`h7149.py`](custom_components/govee_hvac/h7149.py).

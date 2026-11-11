@@ -1,0 +1,23 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Govee HVAC",
+        "description": "Enter the BLE address of your Govee device (e.g. AA:BB:CC:DD:EE:FF on Linux, or the UUID on macOS) and pick its model.",
+        "data": {
+          "address": "BLE Address",
+          "model": "Model"
+        }
+      },
+      "bluetooth_confirm": {
+        "title": "Govee HVAC",
+        "description": "Set up {name}?"
+      }
+    },
+    "abort": {
+      "already_configured": "Device is already configured.",
+      "not_supported": "This Govee model is not supported yet."
+    }
+  }
+}
